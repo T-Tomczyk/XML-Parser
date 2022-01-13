@@ -5,9 +5,10 @@ import os
 import pandas
 
 # Option. Available namespace styles:
-# 1. full: full link will be used,
-# 2. prefix: only the prefix will be used,
-NAMESPACE_STYLE = 'prefix'
+# 1. full: full link will be used, e.g. <http://address.com/:tag>,
+# 2. prefix: only the prefix will be used, e.g. <ns1:tag>,
+# 3. hidden: namespaces will be ignored, e.g. <tag>.
+NAMESPACE_STYLE = 'hidden'
 
 # Option. Available output formats:
 # 1. xlsx,
@@ -16,8 +17,8 @@ OUTPUT_FORMAT = 'xlsx'
 
 def get_input_filepaths_from_user():
     '''
-    Displays a pop-out file selection dialog. The user can select one or more
-    files. Returns the filepaths for the selected files.
+    Display a pop-out file selection dialog. The user can select one or more
+    files. Return the filepaths for the selected files.
     '''
 
     Tk().withdraw()
@@ -26,8 +27,8 @@ def get_input_filepaths_from_user():
 
 def parse_single_xml_file(filepath):
     '''
-    Takes a single XML file (based on the filepath provided) and parses it
-    into a dictionary of xpath:text pairs. Returns the dictionary.
+    Take a single XML file (based on the filepath provided) and parse it
+    into a dictionary of xpath:text pairs. Return the dictionary.
     Requires the modify_namespaces_in_xpath function to work properly.
     '''
 
@@ -51,14 +52,14 @@ def parse_single_xml_file(filepath):
 def modify_namespaces_in_xpath(root, element):
     '''
     Function needed by the parse_single_xml_file function.
-    Based on user preferance, modifies namespaces within an xpath string:
-     a) if the selected option is 'full', full links will be left out in the
-        xpaths (no action needed because lxml uses full links by default),
-     b) if option is 'prefix', the function will find the prefix used in the
-        tag and replace the link with the prefix,
-     c) if option is 'hidden', the function will remove the namespace
-        completely.
-    The function returns the modified xpath.
+    Based on user preferance, modify namespaces within an xpath string:
+    a) if the selected option is 'full', full links will be left out in the
+       xpaths (no action needed because lxml uses full links by default),
+    b) if option is 'prefix', the function will find the prefix used in the
+       tag and replace the link with the prefix,
+    c) if option is 'hidden', the function will remove the namespace
+       completely.
+    Returns the modified xpath.
     '''
 
     tree = etree.ElementTree(root)
@@ -71,22 +72,28 @@ def modify_namespaces_in_xpath(root, element):
             else:
                 xpath = xpath.replace(link, prefix)
 
-    # elif NAMESPACE_STYLE == 'hidden':
+    elif NAMESPACE_STYLE == 'hidden':
+        if xpath.startswith('{'):
+            xpath = xpath[xpath.index('}')+1:]
 
     return xpath
 
-def combine_all_parsing_results_into_df(filepaths):
-    # Go through all files specified in filepaths, run the
-    # parse_single_xml_file function on each and append the results to the
-    # combined_results list. Also make a list of filenames for column headers.
+def parse_xml_files_and_save_results_to_df(filepaths):
+    '''
+    Go through all files specified in filepaths, run the parse_single_xml_file
+    function on each and append the results to a list. Also, make a list of
+    filenames for column headers. Finally, combine all into a pandas dataframe
+    and return it.
+    '''
+
     combined_results = []
     filenames = []
     for filepath in filepaths:
         combined_results.append(parse_single_xml_file(filepath))
         filenames.append(os.path.basename(filepath))
 
-    # Create pandas df using the combined_results variable. Transpose it for
-    # better readability (we want files as columns, not xpaths as columns).
+    # Transpose the df for better readability (we want files as columns, not
+    # xpaths as columns).
     df = pandas.DataFrame(combined_results).T
 
     # Add column headers.
@@ -97,7 +104,7 @@ def combine_all_parsing_results_into_df(filepaths):
 def add_the_differences_column(df):
     '''
     Adds one more column to the end of the dataframe.
-    The column contains boolean values saying whether all the values in a row
+    The column will contain boolean values saying whether all the values in a row
     are the same (True) or at least one is different than the others (False).
     '''
 
@@ -117,7 +124,7 @@ def generate_output_file(df):
 
 def main():
     filepaths = get_input_filepaths_from_user()
-    df = combine_all_parsing_results_into_df(filepaths)
+    df = parse_xml_files_and_save_results_to_df(filepaths)
     df = add_the_differences_column(df)
     generate_output_file(df)
 
