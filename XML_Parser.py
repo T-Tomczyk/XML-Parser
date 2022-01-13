@@ -73,8 +73,10 @@ def modify_namespaces_in_xpath(root, element):
                 xpath = xpath.replace(link, prefix)
 
     elif NAMESPACE_STYLE == 'hidden':
-        if xpath.startswith('{'):
-            xpath = xpath[xpath.index('}')+1:]
+        while '{' in xpath:
+            ns_start = xpath.index('{')
+            ns_end = xpath.index('}')
+            xpath = xpath[:ns_start] + xpath[ns_end+1:]
 
     return xpath
 
