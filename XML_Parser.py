@@ -15,6 +15,10 @@ NAMESPACE_STYLE = 'hidden'
 # 2. csv.
 OUTPUT_FORMAT = 'xlsx'
 
+# Option. Either True or False. Decides whether attributes will be parsed and
+# included in the output file or ignored.
+INCLUDE_ATTRIBUTES = True
+
 def get_input_filepaths_from_user():
     '''
     Display a pop-out file selection dialog. The user can select one or more
@@ -38,18 +42,30 @@ def parse_single_xml_file(filepath):
         xml_string = f.read()
 
     root = etree.fromstring(xml_string)
+    tree = etree.ElementTree(root)
 
     # For each element (tag).
     for element in root.iter():
+        raw_xpath = tree.getelementpath(element)
 
-        # Only get the xpath if the element contains no children and has text.
+        # Get the xpath if the element contains no children and has text.
         if len(element) == 0 and element.text != None:
-            xpath = modify_namespaces_in_xpath(root, element)
+            xpath = modify_namespaces_in_xpath(element, raw_xpath)
             result[xpath] = element.text
+
+        # If INCLUDE_ATTRIBUTES is True, get the xpath if the element has
+        # attributes. Seperate entry is made for each attribute.
+        # The @ symbol is used instead of / to indicate it's an attribute rather
+        # than regular value.
+        if INCLUDE_ATTRIBUTES and len(element.attrib) > 0:
+            for attr_key, attr_value in element.attrib.items():
+                xpath = raw_xpath + '@' + attr_key
+                xpath = modify_namespaces_in_xpath(element, xpath)
+                result[xpath] = attr_value
 
     return result
 
-def modify_namespaces_in_xpath(root, element):
+def modify_namespaces_in_xpath(element, xpath):
     '''
     Function needed by the parse_single_xml_file function.
     Based on user preferance, modify namespaces within an xpath string:
@@ -61,9 +77,6 @@ def modify_namespaces_in_xpath(root, element):
        completely.
     Returns the modified xpath.
     '''
-
-    tree = etree.ElementTree(root)
-    xpath = tree.getelementpath(element)
 
     if NAMESPACE_STYLE == 'prefix':
         for prefix, link in element.nsmap.items():
@@ -105,9 +118,9 @@ def parse_xml_files_and_save_results_to_df(filepaths):
 
 def add_the_differences_column(df):
     '''
-    Adds one more column to the end of the dataframe.
-    The column will contain boolean values saying whether all the values in a row
-    are the same (True) or at least one is different than the others (False).
+    Add one more column to the end of the dataframe. The column will contain
+    boolean values saying whether all the values in a row are the same (True)
+    or at least one is different than the others (False).
     '''
 
     def all_elements_in_list_are_same(lst):
