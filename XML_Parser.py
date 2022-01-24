@@ -6,7 +6,7 @@ import pandas
 
 # Option. Available namespace styles:
 # 1. full: full link will be used, e.g. <http://address.com/:tag>,
-# 2. prefix: only the prefix will be used, e.g. <ns1:tag>,
+# 2. short: only the prefix will be used, e.g. <ns1:tag>,
 # 3. hidden: namespaces will be ignored, e.g. <tag>.
 NAMESPACE_STYLE = 'hidden'
 
@@ -15,8 +15,8 @@ NAMESPACE_STYLE = 'hidden'
 # 2. csv.
 OUTPUT_FORMAT = 'xlsx'
 
-# Option. Either True or False. Decides whether attributes will be parsed and
-# included in the output file or ignored.
+# Option. Either 'True' or 'False'. Decides whether attributes will be parsed
+# and included in the output file or ignored.
 INCLUDE_ATTRIBUTES = True
 
 def get_input_filepaths_from_user():
@@ -56,7 +56,7 @@ def parse_single_xml_file(filepath):
         # If INCLUDE_ATTRIBUTES is True, get the xpath if the element has
         # attributes. Seperate entry is made for each attribute.
         # The @ symbol is used instead of / to indicate it's an attribute rather
-        # than regular value.
+        # than a regular text value.
         if INCLUDE_ATTRIBUTES and len(element.attrib) > 0:
             for attr_key, attr_value in element.attrib.items():
                 xpath = raw_xpath + '@' + attr_key
@@ -78,7 +78,7 @@ def modify_namespaces_in_xpath(element, xpath):
     Returns the modified xpath.
     '''
 
-    if NAMESPACE_STYLE == 'prefix':
+    if NAMESPACE_STYLE == 'short':
         for prefix, link in element.nsmap.items():
             if prefix == None:
                 xpath = xpath.replace('{'+ link + '}', '')
@@ -116,7 +116,7 @@ def parse_xml_files_and_save_results_to_df(filepaths):
 
     return df
 
-def add_the_differences_column(df):
+def add_the_diff_column(df):
     '''
     Add one more column to the end of the dataframe. The column will contain
     boolean values saying whether all the values in a row are the same (True)
@@ -124,9 +124,12 @@ def add_the_differences_column(df):
     '''
 
     def all_elements_in_list_are_same(lst):
-        return len(set(lst)) == 1
+        if len(set(lst)) == 1:
+            return "Match"
+        else:
+            return "Break"
 
-    df['All the same?'] = df.apply(all_elements_in_list_are_same, axis=1)
+    df['Diff'] = df.apply(all_elements_in_list_are_same, axis=1)
 
     return df
 
@@ -140,7 +143,7 @@ def generate_output_file(df):
 def main():
     filepaths = get_input_filepaths_from_user()
     df = parse_xml_files_and_save_results_to_df(filepaths)
-    df = add_the_differences_column(df)
+    df = add_the_diff_column(df)
     generate_output_file(df)
 
 if __name__ == '__main__':
