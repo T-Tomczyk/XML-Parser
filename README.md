@@ -1,5 +1,5 @@
 ## Introduction
-Merge_XMLs is a tool for transforming data from one or more .xml files into a single .csv or Excel file.
+Merge_XMLs is a tool for transforming data from one or more .xml files into a single .csv or .xlsx file.
 
 This tool is particularly useful when working with many XML files that are similar to each other in terms of their structures while the main differences between them lie in the text and attributes' values.
 
