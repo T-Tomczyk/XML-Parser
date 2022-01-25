@@ -1,35 +1,8 @@
-from tkinter import Tk
-from tkinter.filedialog import askopenfilenames
-from lxml import etree
 import os
 import pandas
+from lxml import etree
 
-# Option. Available namespace styles:
-# 1. full: full link will be used, e.g. <http://address.com/:tag>,
-# 2. short: only the prefix will be used, e.g. <ns1:tag>,
-# 3. hidden: namespaces will be ignored, e.g. <tag>.
-NAMESPACE_STYLE = 'hidden'
-
-# Option. Available output formats:
-# 1. xlsx,
-# 2. csv.
-OUTPUT_FORMAT = 'xlsx'
-
-# Option. Either 'True' or 'False'. Decides whether attributes will be parsed
-# and included in the output file or ignored.
-INCLUDE_ATTRIBUTES = True
-
-def get_input_filepaths_from_user():
-    '''
-    Display a pop-out file selection dialog. The user can select one or more
-    files. Return the filepaths for the selected files.
-    '''
-
-    Tk().withdraw()
-    filepaths = askopenfilenames(title='Select XML file(s)')
-    return filepaths
-
-def parse_single_xml_file(filepath):
+def parse_single_xml_file(filepath, include_attr, namespaces_style):
     '''
     Take a single XML file (based on the filepath provided) and parse it
     into a dictionary of xpath:text pairs. Return the dictionary.
@@ -50,22 +23,30 @@ def parse_single_xml_file(filepath):
 
         # Get the xpath if the element contains no children and has text.
         if len(element) == 0 and element.text != None:
-            xpath = modify_namespaces_in_xpath(element, raw_xpath)
+            xpath = modify_namespaces_in_xpath(
+                element,
+                raw_xpath,
+                namespaces_style
+                )
             result[xpath] = element.text
 
-        # If INCLUDE_ATTRIBUTES is True, get the xpath if the element has
-        # attributes. Seperate entry is made for each attribute.
-        # The @ symbol is used instead of / to indicate it's an attribute rather
-        # than a regular text value.
-        if INCLUDE_ATTRIBUTES and len(element.attrib) > 0:
+        # If include_attr is 'yes' and if the element has attributes,
+        # get the xpath. Seperate entry in output df is made for each attribute.
+        # In final xpath '@' is used instead of '/' to indicate it's an
+        # attribute rather than a regular text value.
+        if include_attr == 'yes' and len(element.attrib) > 0:
             for attr_key, attr_value in element.attrib.items():
                 xpath = raw_xpath + '@' + attr_key
-                xpath = modify_namespaces_in_xpath(element, xpath)
+                xpath = modify_namespaces_in_xpath(
+                    element,
+                    xpath,
+                    namespaces_style
+                    )
                 result[xpath] = attr_value
 
     return result
 
-def modify_namespaces_in_xpath(element, xpath):
+def modify_namespaces_in_xpath(element, xpath, namespaces_style):
     '''
     Function needed by the parse_single_xml_file function.
     Based on user preferance, modify namespaces within an xpath string:
@@ -78,14 +59,14 @@ def modify_namespaces_in_xpath(element, xpath):
     Returns the modified xpath.
     '''
 
-    if NAMESPACE_STYLE == 'short':
+    if namespaces_style == 'short':
         for prefix, link in element.nsmap.items():
             if prefix == None:
                 xpath = xpath.replace('{'+ link + '}', '')
             else:
                 xpath = xpath.replace(link, prefix)
 
-    elif NAMESPACE_STYLE == 'hidden':
+    elif namespaces_style == 'hidden':
         while '{' in xpath:
             ns_start = xpath.index('{')
             ns_end = xpath.index('}')
@@ -93,7 +74,7 @@ def modify_namespaces_in_xpath(element, xpath):
 
     return xpath
 
-def parse_xml_files_and_save_results_to_df(filepaths):
+def parse_xmls_and_save_to_df(filepaths, include_attr, namespaces_style):
     '''
     Go through all files specified in filepaths, run the parse_single_xml_file
     function on each and append the results to a list. Also, make a list of
@@ -104,7 +85,8 @@ def parse_xml_files_and_save_results_to_df(filepaths):
     combined_results = []
     filenames = []
     for filepath in filepaths:
-        combined_results.append(parse_single_xml_file(filepath))
+        parsed = parse_single_xml_file(filepath, include_attr, namespaces_style)
+        combined_results.append(parsed)
         filenames.append(os.path.basename(filepath))
 
     # Transpose the df for better readability (we want files as columns, not
@@ -114,13 +96,16 @@ def parse_xml_files_and_save_results_to_df(filepaths):
     # Add column headers.
     df.columns = filenames
 
+    # Add the diff column.
+    df = add_the_diff_column(df)
+
     return df
 
 def add_the_diff_column(df):
     '''
     Add one more column to the end of the dataframe. The column will contain
-    boolean values saying whether all the values in a row are the same (True)
-    or at least one is different than the others (False).
+    information saying whether all the values in a row are the same (Match)
+    or at least one is different than the others (Break).
     '''
 
     def all_elements_in_list_are_same(lst):
@@ -133,18 +118,23 @@ def add_the_diff_column(df):
 
     return df
 
-def generate_output_file(df):
-    if OUTPUT_FORMAT == 'xlsx':
-        df.to_excel('output.xlsx')
+def generate_output_file(source_df, output_format):
+    '''
+    Generates either a csv or an xlsx file based on user preferance.
 
-    elif OUTPUT_FORMAT == 'csv':
-        df.to_csv('output.csv')
+    Before saving the file, checks if the output_filename is available. If not,
+    adds a numerical suffix to the filename. Initial target filename is simply
+    output.csv (or output.xlsx), then output1.csv, then output2.csv etc.
+    '''
+    output_filename = 'converter_output.' + output_format
 
-def main():
-    filepaths = get_input_filepaths_from_user()
-    df = parse_xml_files_and_save_results_to_df(filepaths)
-    df = add_the_diff_column(df)
-    generate_output_file(df)
+    suffix = 1
+    while output_filename in os.listdir():
+        output_filename = 'converter_output' + str(suffix) + '.' + output_format
+        suffix += 1
 
-if __name__ == '__main__':
-    main()
+    if output_format == 'xlsx':
+        source_df.to_excel(output_filename)
+
+    elif output_format == 'csv':
+        source_df.to_csv(output_filename)
