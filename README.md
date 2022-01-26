@@ -48,9 +48,9 @@ The left-most column gets populated with unique x-paths from all analyzed XML fi
 The tool has a number of settings:
 1. Output format: output can be exported to either .csv or .xlsx (Excel) file.
 2. Namespaces style:
-  - namespaces can be completely ignored (as in the example above),
-  - only the namespace prefixes will be used in the output ("cont" in the example above),
-  - full links will be used in the output ("http://examplelink.com/contact-us" in the example above).
+    - namespaces can be completely ignored (as in the example above),
+    - only the namespace prefixes will be used in the output ("cont" in the example above),
+    - full links will be used in the output ("http://examplelink.com/contact-us" in the example above).
 3. Attributes: can be included (as in the example above) or not (the "name@style" row would not appear in the example above).
 
 The output gets saved in the same location as the location of the tool under the name converter_output.csv (or .xlsx) or, if converter_output.csv already exists, a numerical suffix will be added (e.g. converter_output1.csv, converter_output2.csv etc.).
@@ -69,9 +69,9 @@ This method only works on Windows.
 
 ## Usage as a Python script
 1. Make sure you have the necessary dependencies installed:
-  - Python 3,
-  - pandas module ("pip install pandas"),
-  - lxml module ("pip install lxml").
+    - Python 3,
+    - pandas module ("pip install pandas"),
+    - lxml module ("pip install lxml").
 2. Download the python files from the src folder. You can do it using your browser or from a command line using git.
 3. In your command line go to the location of the downloaded file.
 4. Run "python GUI.py".
