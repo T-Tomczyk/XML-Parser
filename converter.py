@@ -59,7 +59,7 @@ def modify_namespaces_in_xpath(element, xpath, namespaces_style):
     Returns the modified xpath.
     '''
 
-    if namespaces_style == 'short':
+    if namespaces_style == 'prefixes':
         for prefix, link in element.nsmap.items():
             if prefix == None:
                 xpath = xpath.replace('{'+ link + '}', '')

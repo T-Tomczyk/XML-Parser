@@ -2,12 +2,47 @@ import converter
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
+import webbrowser
 from lxml import etree
+
 
 
 # Main window.
 window = tk.Tk()
 window.title('XML to Tabular Converter')
+
+
+class TopMenu:
+
+    def __init__(self):
+        top_menu = tk.Menu(window)
+
+        cascade1 = tk.Menu(top_menu, tearoff=0)
+        cascade1.add_command(label='Basic Help', command=self.basic_help_clicked)
+        cascade1.add_command(label='Visit GitHub (Online Resource)', command=self.visit_github_clicked)
+        cascade1.add_command(label='Read License (Online Resource)', command=self.read_license_clicked)
+        cascade1.add_command(label='About', command=self.about_clicked)
+
+        top_menu.add_cascade(label='Help', menu=cascade1)
+        window.config(menu=top_menu)
+
+    def basic_help_clicked(self):
+        with open('help_msg_content.txt', 'r') as help_file:
+            help_msg_content = help_file.read()
+
+        tkmessagebox.showinfo('Help', help_msg_content)
+
+    def visit_github_clicked(self):
+        webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter')
+
+    def read_license_clicked(self):
+        webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter/blob/master/LICENSE')
+
+    def about_clicked(self):
+        with open('about_msg_content.txt', 'r') as about_file:
+            about_msg_content = about_file.read()
+
+        tkmessagebox.showinfo('About', about_msg_content)
 
 
 class Option:
@@ -101,6 +136,8 @@ class Main_Button:
                 )
 
 
+TopMenu()
+
 output_format_option = Option(
     'Output format:',
     {'.csv':'csv', '.xlsx':'xlsx'},
@@ -110,7 +147,7 @@ output_format_option = Option(
 
 namespaces_style_option = Option(
     'Namespaces style:',
-    {'Hidden':'hidden', 'Short':'short', 'Full links':'full'},
+    {'Hidden':'hidden', 'Prefixes':'prefixes', 'Full links':'full'},
     1,
     1
     )
