@@ -1,15 +1,12 @@
 import converter
+import msgs
+
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
 import webbrowser
+
 from lxml import etree
-
-
-
-# Main window.
-window = tk.Tk()
-window.title('XML to Tabular Converter')
 
 
 class TopMenu:
@@ -27,10 +24,7 @@ class TopMenu:
         window.config(menu=top_menu)
 
     def basic_help_clicked(self):
-        with open('help_msg_content.txt', 'r') as help_file:
-            help_msg_content = help_file.read()
-
-        tkmessagebox.showinfo('Help', help_msg_content)
+        tkmessagebox.showinfo('Help', msgs.help_msg_content)
 
     def visit_github_clicked(self):
         webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter')
@@ -39,10 +33,7 @@ class TopMenu:
         webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter/blob/master/LICENSE')
 
     def about_clicked(self):
-        with open('about_msg_content.txt', 'r') as about_file:
-            about_msg_content = about_file.read()
-
-        tkmessagebox.showinfo('About', about_msg_content)
+        tkmessagebox.showinfo('About', msgs.about_msg_content)
 
 
 class Option:
@@ -135,6 +126,9 @@ class Main_Button:
                 f'XML file(s) invalid. Unable to convert.\n\nError details:\n {e}'
                 )
 
+
+window = tk.Tk()
+window.title('XML to Tabular Converter')
 
 TopMenu()
 
