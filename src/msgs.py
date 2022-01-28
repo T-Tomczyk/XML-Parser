@@ -1,4 +1,4 @@
-about_msg_content = '''XML to Tabular Converter
+about_msg_content = '''XML Parser
 Version 1.0
 Copyright (c) 2022 Tomasz Tomczyk
 
@@ -6,7 +6,7 @@ This product is licensed under GNU GENERAL PUBLIC LICENSE.
 
 To read the license, click Help -> Read License.'''
 
-help_msg_content = '''XML to Tabular Converter is a tool for transforming data from one or more .xml files into a tabular format (.csv or .xlsx).
+help_msg_content = '''XML Parser is a tool for transforming data from one or more .xml files into a tabular format (.csv or .xlsx).
 
 Usage:
 1) set the options to your preferance and click "Continue",
