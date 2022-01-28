@@ -57,18 +57,18 @@ The tool has a few settings:
 <xsl:table>
 ```
 ...then in the output file you will receive the following:
-    - if style is set to Hidden: `table/...`
-    - if style is set to Prefixes: `{xsl}table/...`
-    - if style is set to Full links: `{http://www.w3.org/1999/XSL/Transform}table/...`
+  - if style is set to Hidden: `table/...`
+  - if style is set to Prefixes: `{xsl}table/...`
+  - if style is set to Full links: `{http://www.w3.org/1999/XSL/Transform}table/...`
 
 3. Attributes. If an XML file includes the following line:
 ```xml
 <name style="First Last">Alan Turing</name>
 ```
 and if Attributes are set to be included (as in the example above), then in the output file you will receive the following:
-    `name` `Alan Turing`
-    `name@style` `First Last`
-Otherwise, the `name@style` `First Last` line will not be displayed in the results.
+| name       | Alan Turing |
+| name@style | First Last  |
+Otherwise, the "name@style First Last" line will not be displayed in the results.
 
 The output gets saved in the same location as the location of the tool under the name xml_parser_output.csv (or .xlsx) or, if xml_parser_output.csv already exists, a numerical suffix will be added (e.g. xml_parser_output1.csv, xml_parser_output2.csv and so on).
 
