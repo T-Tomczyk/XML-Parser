@@ -70,7 +70,8 @@ and if Attributes are set to be included (as in the example above), then in the 
 |------------|-------------|
 | name       | Alan Turing |
 | name@style | First Last  |
-Otherwise, the "name@style First Last" line will not be displayed in the results.
+
+Otherwise, the "name@style" line will not be displayed in the results.
 
 The output gets saved in the same location as the location of the tool under the name xml_parser_output.csv (or .xlsx) or, if xml_parser_output.csv already exists, a numerical suffix will be added (e.g. xml_parser_output1.csv, xml_parser_output2.csv and so on).
 
