@@ -21,7 +21,7 @@ Given ex1.xml:
 </contact>
 ```
 
-and ex2.xml:
+...and ex2.xml:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <contact>
@@ -34,7 +34,7 @@ and ex2.xml:
 </contact>
 ```
 
-the tool produces the following output:
+...the tool produces the following output:
 |               | ex1.xml            | ex2.xml           | Diff  |
 |---------------|--------------------|-------------------|-------|
 | name          | Alan Turing        | Katherine Johnson | Break |
@@ -48,36 +48,52 @@ the tool produces the following output:
 ## Conversion details
 The left-most column gets populated with unique x-paths from all analyzed XML files. The subsequent columns contain the values, one column per each file. The last column states whether all values within a row are same ("Match") or at least one is different than the others ("Break").
 
-The tool has a number of settings:
+The tool has a few settings:
 1. Output format: output can be exported to either .csv or .xlsx (Excel) file.
-2. Namespaces style:
-    - namespaces can be completely ignored (as in the example above),
-    - only the namespace prefixes will be used in the output ("cont" in the example above),
-    - full links will be used in the output ("http://examplelink.com/contact-us" in the example above).
-3. Attributes: can be included (as in the example above) or not (the "name@style" row would not appear in the example above).
 
-The output gets saved in the same location as the location of the tool under the name converter_output.csv (or .xlsx) or, if converter_output.csv already exists, a numerical suffix will be added (e.g. converter_output1.csv, converter_output2.csv etc.).
+2. Namespaces style. If an XML file starts with the following lines:
+```xml
+<xsl xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:table>
+```
+...then in the output file you will receive the following:
+    - if style is set to Hidden: `table/...`
+    - if style is set to Prefixes: `{xsl}table/...`
+    - if style is set to Full links: `{http://www.w3.org/1999/XSL/Transform}table/...`
+
+3. Attributes. If an XML file includes the following line:
+```xml
+<name style="First Last">Alan Turing</name>
+```
+and if Attributes are set to be included (as in the example above), then in the output file you will receive the following:
+    `name` `Alan Turing`
+    `name@style` `First Last`
+Otherwise, the `name@style` `First Last` line will not be displayed in the results.
+
+The output gets saved in the same location as the location of the tool under the name xml_parser_output.csv (or .xlsx) or, if xml_parser_output.csv already exists, a numerical suffix will be added (e.g. xml_parser_output1.csv, xml_parser_output2.csv and so on).
 
 
 ## Usage as a standalone package
 If you don't know which method to choose, go with this one.
 This method only works on Windows.
-1. Download the .exe file.
-2. Double-click on the downloaded .exe file.
-3. Windows might ask for your permission to open the application. Grant it.
-4. Select options and click "Continue".
-5. In the pop-up window select the XML file(s) you want to transform.
-6. The script will produce an output file in the same location as the .exe file.
+1. Download the .exe file from the Releases section or directly from [/releases/download/v1.0/XML_Parser.exe](https://github.com/T-Tomczyk/XML-Parser/releases/download/v1.0/XML_Parser.exe)
+2. Your browser might ask you to confirm that you trust this program.
+3. Open the downloaded .exe file.
+4. Windows might ask for your permission to open the application. Grant it.
+5. Select options and click "Continue".
+6. In the pop-up window select the XML file(s) you want to transform.
+7. The script will produce an output file in the same location as the .exe file.
 
 
 ## Usage as a Python script
 1. Make sure you have the necessary dependencies installed:
     - Python 3,
-    - pandas module ("pip install pandas"),
-    - lxml module ("pip install lxml").
-2. Download the python files from the src directory. You can do it using your browser or from a command line using git.
+    - pandas module (```pip install pandas```)
+    - lxml module (```pip install lxml```)
+2. Download all the python files from the src directory. You can do it using your browser or from a command line using git: ```git clone https://github.com/T-Tomczyk/XML-Parser.git```
+
 3. In your command line go to the location of the downloaded file.
-4. Run "python GUI.py".
+4. Run ```python GUI.py```.
 4. Select options and click "Continue".
 5. In the pop-up window select the XML file(s) you want to transform.
 6. The script will produce an output file in the same location as the .py files.

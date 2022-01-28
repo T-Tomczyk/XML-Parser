@@ -124,7 +124,8 @@ def generate_output_file(source_df, output_format):
 
     Before saving the file, checks if the output_filename is available. If not,
     adds a numerical suffix to the filename. Initial target filename is simply
-    output.csv (or output.xlsx), then output1.csv, then output2.csv etc.
+    xml_parser_output.csv (or xml_parser_output.xlsx), then
+    # xml_parser_output.csv, then xml_parser_output.csv and so on.
     '''
     output_filename = 'xml_parser_output.' + output_format
 
