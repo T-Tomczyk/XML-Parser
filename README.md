@@ -65,7 +65,7 @@ The tool has a few settings:
 ```xml
 <name style="First Last">Alan Turing</name>
 ```
-and if Attributes are set to be included (as in the example above), then in the output file you will receive the following:
+...and if Attributes are set to be included (as in the example above), then in the output file you will receive the following:
 |            | ex1.xml     |
 |------------|-------------|
 | name       | Alan Turing |
