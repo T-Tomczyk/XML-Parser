@@ -1,5 +1,5 @@
 ## Introduction
-XML to Tabular Converter is a tool for transforming data from one or more .xml files into a tabular format (.csv or .xlsx).
+XML Parser is a tool for transforming data from one or more .xml files into a tabular format (.csv or .xlsx).
 
 This tool will work with all .xml files, but it is particularly useful when comparing files that are similar to each other in terms of the structure, but different in terms of values.
 
@@ -10,36 +10,39 @@ This tool will work with all .xml files, but it is particularly useful when comp
 Given ex1.xml:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<cont:contact xmlns:cont="http://examplelink.com/contact-us">
-   <cont:name style="First Last">Nikola Tesla</cont:name>
-   <cont:phone>
-       <number>+381 11 234 56 78</number>
-       <country>Serbia</country>
-   </cont:phone>
-   <cont:occupation>Inventor</cont:occupation>
-</cont:contact>
+<contact>
+   <name style="First Last">Alan Turing</name>
+   <birth>
+       <country>England</country>
+       <year>1912</year>
+   </birth>
+   <occupation>Mathematician</occupation>
+   <occupation>Computer Scientist</occupation>
+</contact>
 ```
 
 and ex2.xml:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<cont:contact xmlns:cont="http://examplelink.com/contact-us">
-   <cont:name style="First Last">Thomas Edison</cont:name>
-   <cont:phone>
-       <number>(0123) 456-7890</number>
-   </cont:phone>
-   <cont:occupation>Inventor</cont:occupation>
-</cont:contact>
+<contact>
+   <name style="First Last">Katherine Johnson</name>
+   <birth>
+       <country>United States</country>
+   </birth>
+   <occupation>Mathematician</occupation>
+   <occupation>Physicist</occupation>
+</contact>
 ```
 
 the tool produces the following output:
-|               | ex1.xml           | ex2.xml         | Diff  |
-|---------------|-------------------|-----------------|-------|
-| name          | Nikola Tesla      | Thomas Edison   | Break |
-| name@style    | First Last        | First Last      | Match |
-| phone/number  | +381 11 234 56 78 | (0123) 456-7890 | Break |
-| phone/country | Serbia            |                 | Break |
-| occupation    | Inventor          | Inventor        | Match |
+|               | ex1.xml            | ex2.xml           | Diff  |
+|---------------|--------------------|-------------------|-------|
+| name          | Alan Turing        | Katherine Johnson | Break |
+| name@style    | First Last         | First Last        | Match |
+| birth/country | England            | United States     | Break |
+| birth/year    | 1912               |                   | Break |
+| occupation[1] | Mathematician      | Mathematician     | Match |
+| occupation[2] | Computer Scientist | Physicist         | Break |
 
 
 ## Conversion details
@@ -72,7 +75,7 @@ This method only works on Windows.
     - Python 3,
     - pandas module ("pip install pandas"),
     - lxml module ("pip install lxml").
-2. Download the python files from the src folder. You can do it using your browser or from a command line using git.
+2. Download the python files from the src directory. You can do it using your browser or from a command line using git.
 3. In your command line go to the location of the downloaded file.
 4. Run "python GUI.py".
 4. Select options and click "Continue".

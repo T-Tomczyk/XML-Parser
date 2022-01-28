@@ -126,11 +126,11 @@ def generate_output_file(source_df, output_format):
     adds a numerical suffix to the filename. Initial target filename is simply
     output.csv (or output.xlsx), then output1.csv, then output2.csv etc.
     '''
-    output_filename = 'converter_output.' + output_format
+    output_filename = 'xml_parser_output.' + output_format
 
     suffix = 1
     while output_filename in os.listdir():
-        output_filename = 'converter_output' + str(suffix) + '.' + output_format
+        output_filename = 'xml_parser_output' + str(suffix) + '.' + output_format
         suffix += 1
 
     if output_format == 'xlsx':

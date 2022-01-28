@@ -27,10 +27,10 @@ class TopMenu:
         tkmessagebox.showinfo('Help', msgs.help_msg_content)
 
     def visit_github_clicked(self):
-        webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter')
+        webbrowser.open('https://github.com/T-Tomczyk/XML-Parser')
 
     def read_license_clicked(self):
-        webbrowser.open('https://github.com/T-Tomczyk/XML-to-Tabular-Converter/blob/master/LICENSE')
+        webbrowser.open('https://github.com/T-Tomczyk/XML-Parser/blob/master/LICENSE')
 
     def about_clicked(self):
         tkmessagebox.showinfo('About', msgs.about_msg_content)
@@ -105,7 +105,7 @@ class Main_Button:
 
     def main_button_clicked(self):
         '''
-        Event which occurs when user clicks the Convert button.
+        Event which occurs when user clicks the Continue button.
         '''
 
         # Ask user to select files that they want converted.
@@ -128,7 +128,7 @@ class Main_Button:
 
 
 window = tk.Tk()
-window.title('XML to Tabular Converter')
+window.title('XML Parser')
 
 TopMenu()
 

@@ -1,5 +1,5 @@
 about_msg_content = '''XML to Tabular Converter
-Version 0.1
+Version 1.0
 Copyright (c) 2022 Tomasz Tomczyk
 
 This product is licensed under GNU GENERAL PUBLIC LICENSE.
