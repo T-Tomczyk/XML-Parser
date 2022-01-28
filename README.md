@@ -93,7 +93,8 @@ This method only works on Windows.
     - Python 3,
     - pandas module (```pip install pandas```)
     - lxml module (```pip install lxml```)
-2. Download all the python files from the src directory. You can do it using your browser or from a command line using git: ```git clone https://github.com/T-Tomczyk/XML-Parser.git```
+2. Download all the python files from the src directory. You can do it using your browser or from a command line using git:
+```git clone https://github.com/T-Tomczyk/XML-Parser.git```
 
 3. In your command line go to the location of the downloaded file.
 4. Run ```python GUI.py```.
