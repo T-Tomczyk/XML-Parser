@@ -66,6 +66,8 @@ The tool has a few settings:
 <name style="First Last">Alan Turing</name>
 ```
 and if Attributes are set to be included (as in the example above), then in the output file you will receive the following:
+|            | ex1.xml     |
+|------------|-------------|
 | name       | Alan Turing |
 | name@style | First Last  |
 Otherwise, the "name@style First Last" line will not be displayed in the results.
